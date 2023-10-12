@@ -7,7 +7,9 @@ const userSchema = new mongoose.Schema({
     age:Number,
     password:{type:String},
     cart: String,
-    rol:String
+    rol:String,
+    phone: String,
+    active: Boolean
 });
 const usersModel = mongoose.model("users", userSchema);
 export default usersModel;

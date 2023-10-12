@@ -54,3 +54,12 @@ const agregarProductoAlCarrito = async (pid) => {
     console.log("Error en agregar el Producto al Carrito! " + error);
   }
 };
+
+// Compra
+async function comprar(){
+  try {
+    const cartID : 
+  } catch (error) {
+    
+  }
+}

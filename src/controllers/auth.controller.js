@@ -19,6 +19,10 @@ class AuthControl {
             last_name: userInfo.user.last_name,
             rol: userInfo.user.rol
         }
+        req.session.logged = true
+        req.session.adim = true
+        
+
         console.log("Rol: ", userInfo.user.rol);
         return res.status(200).json({status:"success", user: userInfo.user, redirect: "/profile"});
     }

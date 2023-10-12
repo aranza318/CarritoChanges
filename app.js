@@ -3,7 +3,6 @@ import Handlebars from "handlebars";
 import expressHandlebars from "express-handlebars";
 import __dirname from "./utils.js";
 import { Server } from "socket.io";
-import mongoose from "mongoose";
 import cartsRouter from "./src/routes/cart.routes.js";
 import productsRouter from "./src/routes/product.routes.js";
 import sessionsRouter from "./src/routes/sessions.routes.js";
@@ -17,14 +16,9 @@ import initializeGitHubPassport from "./src/midsIngreso/github.js";
 import passport from "passport";
 import cookieParser from "cookie-parser";
 import { MONGODB_CNX_STR, PORT, SECRET_SESSIONS} from "./src/config/configs.js"
+import "./src/dao/dbConfig.js"
 
 const app = express();
-
-//Mongo connect
-const connection = mongoose.connect(MONGODB_CNX_STR,({
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}))
 
 //Server
 const httpServer = app.listen(PORT, () => {console.log(`conectado a ${PORT}`)})

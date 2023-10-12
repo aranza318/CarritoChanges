@@ -36,9 +36,17 @@ class UserManager {
           if (userLogged && isValidPassword(userLogged, pass)) {
             const rol =
               userLogged.email === "adminCoder@coder.com" ? "admin" : "usuario";
-    
+              if (userLogged.email === 'adminCoder@coder.com' && password === 'adminCod3r123') {
+                req.session.isAdmin = true
+                req.session.role = "admin"
+            } else {
+                req.session.isAdmin = false
+                req.session.role = "usuario"
+
+            }
             return userLogged;
           }
+
           return null;
         } catch (error) {
           console.error("Error durante el login:", error);

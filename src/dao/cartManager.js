@@ -1,5 +1,6 @@
 import { cartModel } from "./models/cart.model.js";
 import mongoose from "mongoose";
+import { ticketModel } from "./models/ticket.model.js";
 
 class CartManager {
   //Crea el nuevo carrito
@@ -123,6 +124,21 @@ class CartManager {
       return false;
     }
   }
+
+  //Compra
+  async purchase(req, res){
+    try {
+      const {cid} = req.params
+      const cart = await this.getCart(cid);
+      if(!cart){
+      
+      }
+    } catch (error) {
+      
+    }
+  }
+
+
 
   validateId(id) {
     return id.lenght === 24 ? true : false;
