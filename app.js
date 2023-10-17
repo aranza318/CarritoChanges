@@ -5,7 +5,7 @@ import __dirname from "./utils.js";
 import { Server } from "socket.io";
 import cartsRouter from "./src/routes/cart.routes.js";
 import productsRouter from "./src/routes/product.routes.js";
-import sessionsRouter from "./src/routes/sessions.routes.js";
+import serviceRouter from "./src/routes/sessions.routes.js";
 import viewsRouter from "./src/routes/views.routes.js";
 import emailRouter from "./src/routes/email.routes.js";
 import smsRouter from "./src/routes/sms.router.js";
@@ -66,7 +66,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'))
 app.use("/api/products/", productsRouter);
 app.use("/api/carts/", cartsRouter);
-app.use("/api/sessions/", sessionsRouter);
+app.use("/api/sessions/", serviceRouter);
 app.use("/api/email", emailRouter);
 app.use("/api/sms", smsRouter);
 app.use("/", viewsRouter);

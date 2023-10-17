@@ -1,31 +1,27 @@
-import { getTickets, createNewTicket } from "../services/tickets.service.js";
+import TicketService from "../services/tickets.service.js";
 
-export async function getAllTickets (req, res){
-    try {
-        const ticket = await getTickets();
-        if(ticket){
-            res.json(ticket)
-        } else{
-            res.json({message:"No existen tickets"})
-        }
-    } catch (error) {
-        res.json(error)
-    }
-}
+class TicketController {
+  constructor() {
+    this.ticketService = new TicketService();
+  }
 
-export async function createTicket (req, res){
+  async createTicket(req) {
     try {
-        console.log("Datos recibidos: ", req.body);
-        const obj = req.body
-        const ticket = await createNewTicket(obj)
-        if(ticket){
-            console.log("Ticket creado con exito", ticket);
-            res.status(201).json(ticket)
+
+        const data = req.body;
+        const ticket = await this.ticketService.createTicket(data);
+
+        if (ticket) {
+            return ticket;  
         } else {
-            throw new Error("No se pudo generar el ticket")
+            throw new Error("Error al crear el ticket");
         }
     } catch (error) {
-        console.error("Error al crear el ticket: ", error);
-        res.status(500).json({error: error.message})
+        console.error('Error específico en la creación del ticket:', error);
+        throw error;  
     }
 }
+
+}
+
+export default new TicketController();

@@ -1,47 +1,60 @@
-import UserManager from "../dao/userManager.js";
-import usersModel from "../dao/models/user.model.js";
-import jwt from "jsonwebtoken";
-import { JWT_KEY } from "../config/configs.js";
+import UserManager from '../dao/userManager.js';
+import jwt from 'jsonwebtoken';
+import usersModel from '../dao/models/user.model.js';
+import { JWT_KEY } from '../config/configs.js';
 
-class AuthenticationService {
-    constructor() {
-        this.userManager = new UserManager();
-        this.secretKey = JWT_KEY;
+class AuthService {
+  constructor() {
+    this.userManager = new UserManager();
+    this.secretKey = JWT_KEY;  
+  }
+
+  async login(email, password) {
+    const user = await this.userManager.login(email, password);
+    if (!user) {
+      return null;
     }
-    async login(email,password) {
-            const user = await this.userManager.login(email, password);
-            if(!user){
-                return null;
-            }
-            const token = jwt.sign({id:user._id, email: user.email, rol: user.rol}, this.secretKey, {expiresIn:'13h'});
-            return {user, token}
+
+    const token = jwt.sign(
+      { id: user._id, email: user.email, role: user.role },
+      this.secretKey,
+      { expiresIn: '24h' }
+    );
+
+    return { user, token };
+  }
+
+  async githubCallback(profile) {
+    try {
+      if (!profile || !profile._json ) {
+        throw new Error("Profile information is incomplete.");
+      }
+  
+      if (!profile._json.email) {
+        console.warn('Email is null. Handling this case specifically.');
+        profile._json.email = 'no-email@example.com';
+      }
+  
+      let user = await usersModel.findOne({ email: profile._json.email });
+  
+      if (!user) {
+        user = await usersModel.create({
+          first_name: profile._json.name || 'Unknown',
+          last_name: '',
+          email: profile._json.email,
+          age: 100,  
+          password: '',  
+          role: 'user',
+        });
+      }
+  
+      return user;
+    } catch (error) {
+      console.error('An error occurred:', error);
+      throw error;
     }
-    async githubCallback(profile){
-        try {
-            if(!profile||!profile._json){
-                throw new Error("La informacion de profile esta incompleta");
-            }
-            if(!profile._json.email){
-                console.warn('Email nulo');
-                profile._json.email = 'sinemail@ejemplo.com';
-            }
-            let user = await usersModel.findOne({email:profile._json.email});
-            if (!user){
-                user = await usersModel.create({
-                    first_name:profile._json.name || "GitHubUser",
-                    last_name:"",
-                    email:profile._json.email,
-                    age:100,
-                    password:"",
-                    rol: "usuario"
-                })
-            } 
-            return user;
-        } catch (error) {
-            console.error("Un error ocurrio ", error);
-            throw error;
-        }
-    }
+  }
 }
 
-export default AuthenticationService;
+
+export default AuthService;

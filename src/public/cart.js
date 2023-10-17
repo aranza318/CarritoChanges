@@ -87,11 +87,10 @@ async function realizarCompra() {
       return;
     }
 
-    // Asegurarse de que la respuesta es JSON antes de tratar de parsearla
     const contentType = response.headers.get("content-type");
     if (contentType && contentType.indexOf("application/json") !== -1) {
       const data = await response.json();
-      console.log("Compra realizada con éxito", data); // Esto debería mostrarte los datos del ticket.
+      console.log("Compra realizada con éxito", data); 
     } else {
       console.error("Respuesta no JSON:", await response.text());
     }
@@ -101,3 +100,23 @@ async function realizarCompra() {
 
   
 }
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const cartButton = document.getElementById("cartButton");
+
+  if (cartButton) {
+    cartButton.addEventListener("click", async () => {
+      try {
+        const cartId = await obtenerIdCarrito();
+        if (cartId) {
+          window.location.href = `/carts/${cartId}`;
+        } else {
+          console.error("El ID del carrito es undefined");
+        }
+      } catch (error) {
+        console.error("Error al obtener el ID del carrito: " + error);
+      }
+    });
+  }
+});

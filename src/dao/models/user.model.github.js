@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
     age:Number,
     password:{type:String},
     cart: String,
-    rol:String,
+    role:String,
     phone: String,
     active: Boolean
 });

@@ -1,66 +1,74 @@
 import AuthenticationService from "../services/auth.service.js";
-import CartServices from "../services/cart.service.js";
 
-class AuthControl {
-    constructor(){
-        this.authService = new AuthenticationService();
-        this.cartService = new CartServices();
-    }
-    async login (req, res){
-        const {email, password} = req.body;
-        const userInfo = await this.authService.login(email, password);
-        console.log("Informacion de usuario: ", userInfo);
-        if(!userInfo || !userInfo.user){
-         return res.status(401).json({status:"error", message: "Informacion invalida"});
-        }
-        if (userInfo && userInfo.user) {
-            console.log("Setting session and cookie");
-        req.session.user = {
-            id: userInfo.user._id || userInfo.user.id,
-            email: userInfo.user.email,
-            first_name: userInfo.user.first_name || userInfo.user.firstName,
-            last_name: userInfo.user.last_name || userInfo.user.lastName,
-            rol: userInfo.user.rol,
-            cart: userInfo.user.cart
-        }
-        }
-        console.log("Full user data object:", userInfo.user);
+class AuthController {
+  constructor() {
+    this.authService = new AuthenticationService();
+  }
 
-        console.log("Assigned session:", req.session); 
-    
-        res.cookie("coderCookieToken", userInfo.token, {
-          httpOnly: true,
-          secure: false,
-        });
-    
-        console.log("Login successful, redirecting to /profile");
-        return res
-          .status(200)
-          .json({ status: "success", user: userInfo.user, redirect: "/profile" });
-    }
-    async githubCallback(req, res){
-        console.log("Contolando acceso con GitHub");
-        try {
-            if(req.user){
-                req.session.user = req.user;
-                req.session.logged = true;
-                return res.redirect("/profile");
-            }else{
-                return res.redirect("/login");
-            }
+  async login(req, res) {
+    console.log("Login request received:", req.body);
 
-        } catch (error) {
-            console.error("Ocurrio un error", error);
-            return res.redirect("/login")
-        }
+    const { email, password } = req.body;
+    const userData = await this.authService.login(email, password);
+    console.log("User data retrieved:", userData);
+
+    if (!userData || !userData.user) {
+      console.log("Invalid credentials");
+      return res
+        .status(401)
+        .json({ status: "error", message: "Invalid credentials" });
     }
-    logout(req, res){
-        req.session.destroy((error)=>{
-            if(error){
-                return res.redirect("/profile");
-            }
-            return res.redirect("/login")
-        })
+
+    if (userData && userData.user) {
+      console.log("Setting session and cookie");
+      req.session.user = {
+        id: userData.user.id || userData.user._id, 
+        email: userData.user.email,
+        first_name: userData.user.firstName || userData.user.first_name, 
+        last_name: userData.user.lastName || userData.user.last_name, 
+        age: userData.user.age,
+        role: userData.user.role
+      };
     }
+
+    console.log("Full user data object:", userData.user);
+
+    console.log("Assigned session:", req.session); 
+
+    res.cookie("coderCookieToken", userData.token, {
+      httpOnly: true,
+      secure: false,
+    });
+
+    console.log("Login successful, redirecting to /products");
+    return res
+      .status(200)
+      .json({ status: "success", user: userData.user, redirect: "/products" });
+  }
+  async githubCallback(req, res) {
+    console.log("Inside AuthController githubCallback");
+    try {
+      if (req.user) {
+        req.session.user = req.user;
+        req.session.loggedIn = true;
+        return res.redirect("/products");
+      } else {
+        return res.redirect("/login");
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+      return res.redirect("/login");
+    }
+  }
+
+  logout(req, res) {
+    req.session.destroy((err) => {
+      if (err) {
+        return res.redirect("/profile");
+      }
+      return res.redirect("/login");
+    });
+  }
 }
-export default AuthControl;
+
+export default AuthController;

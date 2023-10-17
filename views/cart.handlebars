@@ -26,28 +26,27 @@
                     <li class="nav-item">
                         <a class="nav-link text-white" href="/profile">Tu perfil</a>
                      </li>
+                     <li>
+                        <button id="cartButton">CART</button>
+                     </li>
                  </ul>
             </div>
-    <h1>Carrito</h1>
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <table class="table">
-  {{#each products}}
- <tr>
-    <td>
-      <a href="/products/{{this._id}}" class="text-decoration-none">
-      <img src="{{this.product.thumbnail}}" alt="{{this.product.title}}" class="img-fluid">
-      </a>
-      </td>
-      <td>
-    {{this.product.title}} - {{this.product.price}} - Cantidad: {{this.quantity}}
-   
-  {{/each}}
-      </table>
+   <div class="container-carts">
+      <h1>Carrito</h1>
+      <div class="product-cart">
+        <ul>
+          {{#each products}}
+            <li>
+              {{this.product.title}}
+              - ${{this.product.price}}
+              - Cantidad:
+              {{this.quantity}}
+            </li>
+          {{/each}}
+        </ul>
+        <button onclick="realizarCompra()">Realizar Compra</button>
+      </div>
     </div>
-  </div>
-</div>
 </body>
 <script src="../src/public/cart.js"></script>
 </html>

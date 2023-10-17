@@ -1,34 +1,29 @@
 import { Router } from "express";
 import CartManager from "../dao/cartManager.js";
-import cartsControl from "../controllers/cart.controller.js";
-import { passportCall, authorization } from "../midsIngreso/passAuth.js";
+import cartController from "../controllers/cart.controller.js";
+import { authorization, passportCall } from "../midsIngreso/passAuth.js";
 
 const cartsRouter = Router();
 const CM = new CartManager();
 
+cartsRouter.post("/", cartController.createCart.bind(cartController));
 
-//Postea el nuevo carrito
-cartsRouter.post("/", cartsControl.createNewCart.bind(cartsControl));
+cartsRouter.get("/:cid", cartController.getCart.bind(cartController));
 
-//Busca carrito por su ID
-cartsRouter.get("/:cid", cartsControl.getThisCart.bind(cartsControl));
+cartsRouter.post("/:cid/products/:pid", passportCall('jwt'), authorization(['user']), cartController.addProductToCart.bind(cartController));
 
-//Agrega el producto al carrito
-cartsRouter.post("/:cid/products/:pid", passportCall('jwt'), authorization(['user']), cartsControl.addProduct.bind(cartsControl));
+cartsRouter.put("/:cid/products/:pid", cartController.updateQuantityProductFromCart.bind(cartController));
 
-//Actualiza el producto por su ID
-cartsRouter.put("/:cid/products/:pid", cartsControl.updateQuantity.bind(cartsControl));
+cartsRouter.put("/:cid", cartController.updateCart.bind(cartController));
 
-//Elimina el producto del carrito
-cartsRouter.delete("/:cid/products/:pid", cartsControl.deleteThisProduct.bind(cartsControl));
+cartsRouter.delete("/:cid/products/:pid", cartController.deleteProductFromCart.bind(cartController));
 
-//Vacia el carrito
-cartsRouter.delete("/:cid", cartsControl.cleanCart.bind(cartsControl));
+cartsRouter.delete("/:cid", cartController.deleteProductsFromCart.bind(cartController));
 
-//Compra
-cartsRouter.post("/:cid/purchase", (req,res,next) => {
-    console.log('Accedio a ruta de compra')
-    next()
-}, passportCall('jwt'), cartsControl.purchaseTicket.bind(cartsControl));
+cartsRouter.post("/:cid/purchase", (req, res, next) => {
+    console.log('Ruta de compra accedida');
+    next();
+  }, passportCall("jwt"), cartController.createPurchaseTicket.bind(cartController));
+
 
 export default cartsRouter;

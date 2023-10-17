@@ -24,20 +24,24 @@ export const passportCall = (strategy) => {
   };
 };
 
-export const authorization = (rol) => {
-  return async (req, res, next) => {
-    if (!req.user) {
-      console.log('User is not authenticated'); 
-      return res.status(401).send({ status: "error", message: "Unauthorizated" });
-    }
+export const authorization = (roles) => {
+return async (req, res, next) => {
+  if (!req.user) {
+    console.log('User is not authenticated'); 
+    return res
+      .status(401)
+      .send({ status: "error", message: "Unauthorizated" });
+  }
 
-    if (!rol.includes(req.user.rol)) {
-      console.log('User does not have the required rol'); 
-      return res.status(403).send({ status: "error", message: "No permissions" });
-    }
+  if (!roles.includes(req.user.role)) {
+    console.log('User does not have the required role'); 
+    return res
+      .status(403)
+      .send({ status: "error", message: "No permissions" });
+  }
 
-    next();
-  };
+  next();
+};
 };
 
 
