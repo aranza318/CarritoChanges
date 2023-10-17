@@ -1,4 +1,4 @@
-import { getTickets, createNewTicket } from "../services/tickets.service";
+import { getTickets, createNewTicket } from "../services/tickets.service.js";
 
 export async function getAllTickets (req, res){
     try {

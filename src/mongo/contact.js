@@ -1,4 +1,4 @@
-import usersModel from "../dao/models/user.model.github";
+import usersModel from "../dao/models/user.model.github.js";
 
 class ContactsMDB {
     constructor(){

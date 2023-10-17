@@ -7,6 +7,8 @@ import cartsRouter from "./src/routes/cart.routes.js";
 import productsRouter from "./src/routes/product.routes.js";
 import sessionsRouter from "./src/routes/sessions.routes.js";
 import viewsRouter from "./src/routes/views.routes.js";
+import emailRouter from "./src/routes/email.routes.js";
+import smsRouter from "./src/routes/sms.router.js";
 import { allowInsecurePrototypeAccess } from "@handlebars/allow-prototype-access";
 import session from "express-session";
 import MongoStore from "connect-mongo";
@@ -15,6 +17,7 @@ import initializePassport from "./src/midsIngreso/passport.js"
 import initializeGitHubPassport from "./src/midsIngreso/github.js";
 import passport from "passport";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import { MONGODB_CNX_STR, PORT, SECRET_SESSIONS} from "./src/config/configs.js"
 import "./src/dao/dbConfig.js"
 
@@ -37,7 +40,10 @@ app.engine(
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 app.use(express.static(__dirname));
-
+app.use(cors({
+  credentials:true,
+  method: ["GET", "POST", "PUT", "DELETE"]
+}))
 app.use(cookieParser());
 
 app.use(session({
@@ -61,6 +67,8 @@ app.use(morgan('dev'))
 app.use("/api/products/", productsRouter);
 app.use("/api/carts/", cartsRouter);
 app.use("/api/sessions/", sessionsRouter);
+app.use("/api/email", emailRouter);
+app.use("/api/sms", smsRouter);
 app.use("/", viewsRouter);
 
 
@@ -108,7 +116,7 @@ socketServer.on("connection", async (socket) => {
     socket.broadcast.emit("broadcast", usuario);
     });
 
-  socket.on("disconnet", ()=>{
+  socket.on("disconnect", ()=>{
     console.log("Usuario desconectado");
     });
 

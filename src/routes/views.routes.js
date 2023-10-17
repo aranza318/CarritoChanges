@@ -1,6 +1,7 @@
 import express from "express";
 import ProductManager from "../dao/ProductManager.js";
 import CartManager from "../dao/cartManager.js";
+import cartController from "../controllers/cart.controller.js";
 
 
 const router = express.Router();
@@ -9,10 +10,13 @@ const CM = new CartManager()
 
 const checkSession = (req, res, next) => {
  
+  console.log('Checking session:', req.session);
+
   if (req.session && req.session.user) {
-    console.log("Chequeando sesion: ", req.session);
+    console.log('Session exists:', req.session.user);
     next();
   } else {
+    console.log('No session found, redirecting to /login');
     res.redirect("/login");
   }
 };
@@ -67,6 +71,12 @@ router.get("/carts/:cid", async (req, res) => {
     });
   }
 });
+
+//Acceso al sector compra
+router.post("/carts/:cid", async (req,res)=>{
+  const cid = req.params.cid;
+  cartController.getPurchase(req,res,cid);
+})
 
 //Acceso al formulario
 router.get("/realtimeproducts", (req, res) => {

@@ -15,4 +15,4 @@ export const GMAIL_USER = process.env.GMAIL_USER
 export const GMAIL_PASSWORD = process.env.GMAIL_PASSWORD
 export const TWILIO_NUMBER = process.env.TWILIO_NUMBER
 export const TWILIO_SID = process.env.TWILIO_SID
-export const TWILIO_AUTH = process.env.TWILIO_AUTH
+export const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN

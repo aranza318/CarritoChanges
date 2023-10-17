@@ -7,9 +7,9 @@ class CartManager {
   async newCart() {
     let cart = await cartModel.create({ products: [] });
     console.log("Cart created!");
+    
     return {
-      status: "ok",
-      message: "El Carrito se creó correctamente!",
+
       id: cart._id,
     };
   }
@@ -81,6 +81,22 @@ class CartManager {
         return false;
       }
     } catch (error) {
+      return false;
+    }
+  }
+  async updateProducts(cid, products) {
+    try {
+      await cartModel.updateOne(
+        { _id: cid },
+        { products: products },
+        { new: true, upsert: true }
+      );
+      console.log("Product updated!");
+
+      return true;
+    } catch (error) {
+      console.log("Not found!");
+
       return false;
     }
   }

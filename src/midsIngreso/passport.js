@@ -32,10 +32,10 @@ const initializePassport = ()=>{
           console.log("Rol antes de la asignación:", user.rol);
           if (user.email == "adminCoder@coder.com" && password === "adminCod3r123") {
             console.log("Asignando rol de admin");
-            user.rol = "admin";
+            user.rol = 'admin';
           } else {
             console.log("Asignando rol de usuario");
-            user.rol = "user";
+            user.rol = 'user';
           }
           console.log("Rol después de la asignación:", user.rol);
           let result = await usersModel.create(user);

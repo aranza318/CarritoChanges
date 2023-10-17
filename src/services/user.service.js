@@ -8,14 +8,14 @@ class UserService {
 
     async register({ first_name, last_name, email, age, password, rol }) {
       try {
-        const rol = email === "admin@example.com" ? "admin" : "user";
+        
         const user = await this.usersManager.addUser({
           first_name,
           last_name,
           email,
           age,
           password,
-          rol
+          rol,
         });
   
         if (user) {

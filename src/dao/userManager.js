@@ -1,5 +1,6 @@
 import { isValidPassword, createHash } from "../midsIngreso/bcrypt.js";
 import usersModel from "./models/user.model.js";
+import UserDto from "./dtos/user.dto.js";
 
 class UserManager {
     //Agrega un nuevo usuario
@@ -22,7 +23,7 @@ class UserManager {
             });
            
             console.log("Usuario agregado", user);
-            return user;
+            return new UserDto(user); 
         } catch (error) {
             console.error("Error al agregar al usuario ", error);
             throw error;
@@ -34,22 +35,11 @@ class UserManager {
           const userLogged = await usersModel.findOne({ email: user });
     
           if (userLogged && isValidPassword(userLogged, pass)) {
-            const rol =
-              userLogged.email === "adminCoder@coder.com" ? "admin" : "usuario";
-              if (userLogged.email === 'adminCoder@coder.com' && password === 'adminCod3r123') {
-                req.session.isAdmin = true
-                req.session.role = "admin"
-            } else {
-                req.session.isAdmin = false
-                req.session.role = "usuario"
-
-            }
-            return userLogged;
-          }
-
+            return new UserDto(userLogged); 
+        }
           return null;
         } catch (error) {
-          console.error("Error durante el login:", error);
+          console.error("Error during login:", error);
           throw error;
         }
       }
@@ -68,6 +58,8 @@ class UserManager {
         }
       
     }
+    //Conseguir Usuario por su ID
+
     //Restore Password
     async restorePassword(email, hashP) {
         try {
