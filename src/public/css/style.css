@@ -25,6 +25,11 @@
     align-items: center;
     
   }
+  #cartButton{
+    border-color: transparent;
+    background-color: #B6FCFD;
+    color: white;
+  }
   .color1{
     text-align: center;
     color: white;
