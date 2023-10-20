@@ -24,11 +24,16 @@ class AuthController {
       req.session.user = {
         id: userData.user.id || userData.user._id, 
         email: userData.user.email,
-        first_name: userData.user.firstName || userData.user.first_name, 
-        last_name: userData.user.lastName || userData.user.last_name, 
+        first_name: userData.user.first_name, 
+        last_name: userData.user.last_name, 
         age: userData.user.age,
-        role: userData.user.role
+        role: userData.user.role,
+        isAdmin: userData.user.isAdmin,
+        cart: userData.user.cart,
       };
+      req.session.email = req.user.email;
+      req.session.isAdmin = req.user.isAdmin;
+      req.session.cart = req.user.cart;
     }
 
     console.log("Full user data object:", userData.user);
@@ -51,6 +56,9 @@ class AuthController {
       if (req.user) {
         req.session.user = req.user;
         req.session.loggedIn = true;
+        req.session.email = req.user.email;
+        req.session.isAdmin = req.user.isAdmin;
+        req.session.cart = req.user.cart;
         return res.redirect("/products");
       } else {
         return res.redirect("/login");
@@ -60,7 +68,10 @@ class AuthController {
       return res.redirect("/login");
     }
   }
-
+  async perfil(req, res) {
+    const user = { email: req.session.email, isAdmin: req.session.isAdmin, cart: req.session.cart };
+    return res.render('profile', { user: user });
+  }
   logout(req, res) {
     req.session.destroy((err) => {
       if (err) {

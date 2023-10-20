@@ -20,8 +20,24 @@ const ticketSchema = new mongoose.Schema({
         type: String,
         ref: "users",
         required: true
-    }
-})
+    },
+    products: [
+        {
+          idProduct: { type: Object },
+          _id: false,
+          quantity: { type: Number },
+          totalPrice: { type: Number },
+        },
+      ],
+});
+
+ticketSchema.pre('find', function () {
+    this.populate({ path: 'products', populate: { path: '_id', model: 'products' } });
+});
+  
+  ticketSchema.pre('findOne', function () {
+    this.populate({ path: 'products', populate: { path: '_id', model: 'products' } });
+});
 
 
 export const ticketModel = mongoose.model("tickets", ticketSchema)

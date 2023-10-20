@@ -6,10 +6,20 @@ const userSchema = new mongoose.Schema({
     email:{type: String, unique:true},
     age:Number,
     password:{type:String},
-    cart: String,
+    cart: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'carts',
+        required: true,
+      },
     role:String,
     phone: String,
-    active: Boolean
+    active: Boolean,
+    isAdmin: {
+        type: Boolean,
+        required: true,
+        default: false,
+      },
+    
 });
 const usersModel = mongoose.model("users", userSchema);
 export default usersModel;

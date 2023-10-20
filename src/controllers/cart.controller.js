@@ -3,10 +3,13 @@ import { cartModel } from "../dao/models/cart.model.js";
 import CartServices from "../services/cart.service.js";
 import ticketController from "./ticket.controller.js";
 import { v4 as uuidv4 } from "uuid";
+import UserDTO from "../dao/dtos/user.dto.js";
+import { ticketModel } from "../dao/models/ticket.model.js";
 
 class CartController {
   constructor() {
     this.cartService = new CartServices();
+    this.productClass = new ProductManager();
   }
 
   async createCart(req, res) {
@@ -197,6 +200,117 @@ class CartController {
         .json({ status: "error", message: "Error interno del servidor" });
     }
   }
+  async purchese(req, res) {
+    try {
+      const { cid } = req.params;
+      const infoUser = new UserDTO(req.session);
+      const cartFound = await this.cartService.getCart(cid);
+      if (!cartFound) {
+        throw new Error('Cart not found');
+      }
+
+      const idCart = cartFound._id;
+
+      // Calcula el total de la compra
+      let cart = cartFound.products.map((item) => {
+        return {
+          id: item._id._id,
+          title: item._id.title,
+          price: item._id.price,
+          quantity: item.quantity,
+        };
+      });
+      console.log('devuelve lo de adentro del cart', cart);
+
+      let precioTotal = 0;
+      cart.forEach((producto) => {
+        precioTotal += producto.price * producto.quantity;
+      });
+
+      return res.status(200).render('purchase', { cart: cart, idCart, infoUser, precioTotal });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async ticketEnd(req, res) {
+    try {
+      const { cid } = req.params;
+      const infoUser = new UserDTO(req.session);
+      const infoUserEmail = req.session.email;
+      const cartFound = await this.cartService.getCart(cid);
+      if (!cartFound) {
+        throw new Error('Cart not found');
+      }
+
+      const idCart = cartFound._id;
+
+      let cartConStock = [];
+      let cartSinStock = [];
+
+      /* Separo los productos con Stock y Sin stock */
+      cartFound.products.forEach((item) => {
+        const idProduct = item._id._id.toString();
+        const title = item._id.title;
+        const quantityInCart = parseInt(item.quantity);
+        const availableStock = parseInt(item._id.stock);
+        const productPrice = parseInt(item._id.price);
+
+        if (quantityInCart <= availableStock) {
+          const precioTotalProducto = productPrice * quantityInCart;
+          cartConStock.push({ idProduct, quantity: quantityInCart, precioTotalProducto, title });
+          const product = this.productClass.getProductById(idProduct);
+          let quantityTotal = availableStock - quantityInCart;
+          productClass.updateOne(
+            idProduct,
+            product.title,
+            product.description,
+            product.price,
+            product.thumbnails,
+            product.code,
+            quantityTotal,
+            product.category,
+            product.status
+          );
+        } else {
+          cartSinStock.push({ idProduct, quantity: quantityInCart });
+        }
+      });
+
+      let precioTotal = 0;
+      cartConStock.forEach((producto) => {
+        precioTotal += producto.precioTotalProducto * producto.quantity;
+      });
+
+      let cart = cartConStock.map((item) => {
+        return {
+          id: item.idProduct,
+          quantity: item.quantity,
+          price: item.precioTotalProducto,
+          title: item.title,
+        };
+      });
+
+      const ticketData = {
+        code: '',
+        purchase_datetime: new Date(),
+        amount: precioTotal,
+        purchaser: infoUserEmail,
+        products: cart,
+      };
+
+      let ticket = await ticketModel.create(ticketData);
+      let code = ticket._id.toString();
+      await ticketModel.findByIdAndUpdate(ticket._id, { code: code });
+      await this.cartService.deleteProductsFromCart(idCart);
+      const idTicket = ticket._id;
+      return res.status(200).render('ticketFinal', { idTicket, cart: cart, idCart, infoUser, precioTotal });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
+
+
 
 export default new CartController();

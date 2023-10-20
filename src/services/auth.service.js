@@ -2,6 +2,9 @@ import UserManager from '../dao/userManager.js';
 import jwt from 'jsonwebtoken';
 import usersModel from '../dao/models/user.model.js';
 import { JWT_KEY } from '../config/configs.js';
+import CartService from "../services/cart.service.js";
+
+const cartService = new CartService();
 
 class AuthService {
   constructor() {
@@ -45,6 +48,8 @@ class AuthService {
           age: 100,  
           password: '',  
           role: 'user',
+          isAdmin: false,
+          cart: await cartService.createCart(),
         });
       }
   

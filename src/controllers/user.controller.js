@@ -7,7 +7,7 @@ class UserController {
   }
 
   async register(req, res) {
-    const { first_name, last_name, email, age, password, role } = req.body;
+    const { first_name, last_name, email, age, password, role, isAdmin, cart } = req.body;
     const response = await this.userService.registerUser({
       first_name,
       last_name,
@@ -15,8 +15,10 @@ class UserController {
       age,
       password,
       role,
+      isAdmin,
+      cart,
     });
-
+ 
     return res.status(response.status === "success" ? 200 : 400).json({
       status: response.status,
       data: response.user,

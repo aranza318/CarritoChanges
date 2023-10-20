@@ -10,10 +10,16 @@ const userSchema = new mongoose.Schema({
   age: Number,
   password: String,
   cart: {
-    type: String,
-    ref: "carts",
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'carts',
+    required: true,
   },
   role: String,
+  isAdmin: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
 });
 const userModel = mongoose.model("users", userSchema);
 export default userModel;

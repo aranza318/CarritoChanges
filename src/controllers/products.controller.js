@@ -11,6 +11,10 @@ class ProductController {
     try {
       const products = await this.productService.getProducts(req.query);
       res.send(products);
+      const userSession = req.session.email;
+      const userSessionisAdmin = req.session.isAdmin;
+      const cart = req.session.cart;
+      return res.status(200).render('products', { products, userSession, userSessionisAdmin, cart });
     } catch (error) {
       res
         .status(500)

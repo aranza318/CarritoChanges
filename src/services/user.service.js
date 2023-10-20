@@ -6,7 +6,7 @@ class UserService {
     this.userManager = new UserManager();
   }
 
-  async registerUser({ first_name, last_name, email, age, password, role }) {
+  async registerUser({ first_name, last_name, email, age, password, role, isAdmin,cart }) {
     try {
       const role =
         email == ADMIN_EMAIL &&
@@ -20,6 +20,8 @@ class UserService {
         age,
         password,
         role,
+        cart,
+        isAdmin,
       });
 
       if (user) {

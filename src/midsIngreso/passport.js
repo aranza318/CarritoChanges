@@ -3,8 +3,9 @@ import local from "passport-local"
 import usersModel from "../dao/models/user.model.js"
 import {createHash,isValidPassword} from "../midsIngreso/bcrypt.js"
 import jwt from "passport-jwt"
+import CartService from "../services/cart.service.js"
 
-
+const cartService = new CartService();
 const JWTStrategy = jwt.Strategy;
 const ExtractJWT = jwt.ExtractJwt;
 const LocalStrategy = local.Strategy;
@@ -27,15 +28,17 @@ const initializePassport = ()=>{
             email,
             age,
             password: createHash(password),
-            rol
+            rol,
+            isAdmin: false,
+            cart: await cartService.createCart(),
           };
-          console.log("Rol antes de la asignación:", user.rol);
+          console.log("Rol antes de la asignación:", user.role);
           if (user.email == "adminCoder@coder.com" && password === "adminCod3r123") {
             console.log("Asignando rol de admin");
-            user.rol = 'admin';
+            user.role = 'admin';
           } else {
             console.log("Asignando rol de usuario");
-            user.rol = 'user';
+            user.role = 'user';
           }
           console.log("Rol después de la asignación:", user.rol);
           let result = await usersModel.create(user);

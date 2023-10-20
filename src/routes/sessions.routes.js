@@ -4,6 +4,7 @@ import passport from "passport";
 import { passportCall, authorization } from "../midsIngreso/passAuth.js";
 import UserController from "../controllers/user.controller.js";
 import AuthController from "../controllers/auth.controller.js";
+import { isUser } from "../midsIngreso/auth.js";
 
 const PRIVATE_KEY = "S3CR3T0";
 
@@ -39,4 +40,5 @@ serviceRouter.get("/current", passportCall("jwt"), authorization("user"), (req, 
   userController.currentUser(req, res);
 });
 
+serviceRouter.get("/profile", isUser, authController.perfil)
 export default serviceRouter;

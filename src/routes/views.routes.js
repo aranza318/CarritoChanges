@@ -2,6 +2,7 @@ import express from "express";
 import ProductManager from "../dao/ProductManager.js";
 import CartManager from "../dao/cartManager.js";
 import cartController from "../controllers/cart.controller.js";
+import { isUser, isNotAdmin } from "../midsIngreso/auth.js";
 
 const checkSession = (req, res, next) => {
   console.log('Checking session:', req.session);
@@ -75,7 +76,7 @@ viewsRouter.get("/realtimeproducts", (req, res) => {
   res.render("realTimeProducts");
 });
 
-viewsRouter.get("/chat", (req, res) => {
+viewsRouter.get("/chat", isUser, isNotAdmin, (req, res) => {
   res.render("chat");
 });
 
