@@ -52,18 +52,15 @@ viewsRouter.get("/products/:pid", async (req, res) => {
   }
 });
 
-viewsRouter.get("/carts/:cid", async (req, res) => {
-  const cid = req.params.cid;
+viewsRouter.get("/carts", async (req, res) => {
+  const cid = req.user.cart.id;
   const cart = await CM.getCart(cid);
-
+  console.log("Carrito: " + cid);
   if (cart) {
     console.log(JSON.stringify(cart, null, 4));
     res.render("cart", { products: cart.products });
   } else {
-    res.status(400).send({
-      status: "error",
-      message: "Error! No se encuentra el ID de Carrito!",
-    });
+    res.status(400).send({status: "error", message: "Error! No se encuentra el ID de Carrito!",});
   }
 });
 

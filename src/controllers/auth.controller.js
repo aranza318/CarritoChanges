@@ -31,9 +31,7 @@ class AuthController {
         isAdmin: userData.user.isAdmin,
         cart: userData.user.cart,
       };
-      req.session.email = req.user.email;
-      req.session.isAdmin = req.user.isAdmin;
-      req.session.cart = req.user.cart;
+     
     }
 
     console.log("Full user data object:", userData.user);

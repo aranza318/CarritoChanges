@@ -9,10 +9,9 @@ class CartManager {
   async newCart() {
     let cart = await cartModel.create({ products: [] });
     console.log("Cart created:", cart);
+    let id = cart._id;
     return {
-      status: "ok",
-      message: "El Carrito se creó correctamente!",
-      id: cart._id,
+     id
     };
   }
 

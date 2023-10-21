@@ -26,7 +26,7 @@ class CartController {
 
   async getCart(req, res) {
     try {
-      const cart = await this.cartService.getCart(req.params.cid);
+      const cart = await this.cartService.getCart(req.user.cart.id);
       res.send({ products: cart.products });
     } catch (error) {
       console.log("hola en cart controller");

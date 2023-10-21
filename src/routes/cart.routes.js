@@ -9,7 +9,7 @@ const CM = new CartManager();
 
 cartsRouter.post("/", cartController.createCart.bind(cartController));
 
-cartsRouter.get("/:cid", isUser, isCartOwner, cartController.getCart.bind(cartController));
+cartsRouter.get("/:cid", cartController.getCart.bind(cartController));
 
 cartsRouter.post("/:cid/products/:pid", passportCall('jwt'), authorization(['user']), cartController.addProductToCart.bind(cartController));
 

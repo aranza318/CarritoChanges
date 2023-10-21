@@ -1,9 +1,11 @@
 import UserManager from "../dao/userManager.js";
 import { ADMIN_EMAIL, ADMIN_PASSWORD } from "../config/configs.js";
+import CartManager from "../dao/cartManager.js";
 
 class UserService {
   constructor() {
     this.userManager = new UserManager();
+    this.cartManager = new CartManager();
   }
 
   async registerUser({ first_name, last_name, email, age, password, role, isAdmin,cart }) {
@@ -13,6 +15,7 @@ class UserService {
         password === ADMIN_PASSWORD
           ? "admin"
           : "user";
+      var cart = this.cartManager.newCart();
       const user = await this.userManager.addUser({
         first_name,
         last_name,

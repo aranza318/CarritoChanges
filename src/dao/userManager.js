@@ -1,9 +1,10 @@
 import usersModel from "./models/user.model.js";
 import { createHash, isValidPassword } from "../midsIngreso/bcrypt.js";
+import CartManager from "./cartManager.js";
 
 
 class UserManager {
-    async addUser({ first_name, last_name, email, age, password, role }) { 
+    async addUser({ first_name, last_name, email, age, password, role, }) { 
       try {
         const existingUser = await usersModel.findOne({ email });
     
@@ -11,7 +12,7 @@ class UserManager {
           console.log("User already exists");
           return null;
         }
-    
+      
         const hashedPassword = createHash(password);
         const user = await usersModel.create({
           first_name,
@@ -19,7 +20,8 @@ class UserManager {
           email,
           age,
           password: hashedPassword,
-          role  
+          role,
+           
         });
     
         console.log("User added!", user);
